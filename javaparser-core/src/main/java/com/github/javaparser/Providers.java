@@ -44,13 +44,8 @@ public final class Providers {
     public static Provider provider(InputStream input, Charset encoding) {
         assertNotNull(input);
         assertNotNull(encoding);
-        try {
-            return new StreamProvider(input, encoding.name());
-        } catch (IOException e) {
-            // The only one that is thrown is UnsupportedCharacterEncodingException,
-            // and that's a fundamental problem, so runtime exception.
-            throw new RuntimeException(e);
-        }
+        return new StreamProvider(input, encoding);
+
     }
 
     public static Provider provider(InputStream input) {

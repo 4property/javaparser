@@ -88,6 +88,7 @@ public class ClassOrInterfaceType extends ReferenceType
     /**
      * @deprecated use JavaParser.parseClassOrInterfaceType instead. This constructor does not understand generics.
      */
+    @Deprecated
     public ClassOrInterfaceType(final String name) {
         this(null, null, new SimpleName(name), null, new NodeList<>());
     }
@@ -345,7 +346,6 @@ public class ClassOrInterfaceType extends ReferenceType
     /**
      * Convert a {@link ClassOrInterfaceType} into a {@link ResolvedType}.
      *
-     * @param classOrInterfaceType  The class of interface type to be converted.
      * @param context               The current context.
      *
      * @return The type resolved.
