@@ -7,6 +7,7 @@ target
 .project
 .classpath
 .idea/
+.vscode/
 *.iml
 release.properties
 **/.DS_Store
