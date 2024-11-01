@@ -122,8 +122,14 @@ public abstract class AbstractSymbolResolutionTest {
                 return JDK18;
             } else if ("19".equals(javaVersion) || javaVersion.startsWith("19.")){
                 return JDK19;
+            } else if ("20".equals(javaVersion) || javaVersion.startsWith("20.")){
+                return JDK20;
+            } else if ("21".equals(javaVersion) || javaVersion.startsWith("21.")){
+                return JDK21;
+            } else if ("22".equals(javaVersion) || javaVersion.startsWith("22.")){
+                return JDK21;
             }
-            throw new IllegalStateException("Unable to determine the current version of java running");
+            throw new IllegalStateException("Unable to determine the current version of java running, java version received " + javaVersion);
         }
 
         /**

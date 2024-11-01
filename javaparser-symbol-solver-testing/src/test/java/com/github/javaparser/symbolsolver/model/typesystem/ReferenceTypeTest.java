@@ -648,10 +648,10 @@ class ReferenceTypeTest extends AbstractSymbolResolutionTest {
 
         Map<String, ResolvedReferenceType> ancestors = new HashMap<>();
         rawArrayList.getAllAncestors().forEach(a -> ancestors.put(a.getQualifiedName(), a));
-        assertEquals(9, ancestors.size());
+        assertEquals(10, ancestors.size());
 
         ResolvedTypeVariable tv =
-                new ResolvedTypeVariable(arraylist.getTypeParameters().get(0));
+                new ResolvedTypeVariable(arraylist.getTypeParameters().getFirst());
         assertEquals(
                 new ReferenceTypeImpl(new ReflectionInterfaceDeclaration(RandomAccess.class, typeResolver)),
                 ancestors.get("java.util.RandomAccess"));
@@ -682,6 +682,10 @@ class ReferenceTypeTest extends AbstractSymbolResolutionTest {
                         new ReflectionInterfaceDeclaration(Iterable.class, typeResolver), ImmutableList.of(tv)),
                 ancestors.get("java.lang.Iterable"));
         assertEquals(
+                new ReferenceTypeImpl(
+                        new ReflectionInterfaceDeclaration(SequencedCollection.class, typeResolver), ImmutableList.of(tv)),
+                ancestors.get("java.util.SequencedCollection"));
+        assertEquals(
                 new ReferenceTypeImpl(new ReflectionInterfaceDeclaration(Serializable.class, typeResolver)),
                 ancestors.get("java.io.Serializable"));
     }
@@ -695,12 +699,16 @@ class ReferenceTypeTest extends AbstractSymbolResolutionTest {
 
         Map<String, ResolvedReferenceType> ancestors = new HashMap<>();
         listOfString.getAllAncestors().forEach(a -> ancestors.put(a.getQualifiedName(), a));
-        assertEquals(2, ancestors.size());
+        assertEquals(3, ancestors.size());
 
         assertEquals(
                 new ReferenceTypeImpl(
                         new ReflectionInterfaceDeclaration(Collection.class, typeResolver), ImmutableList.of(string)),
                 ancestors.get("java.util.Collection"));
+        assertEquals(
+                new ReferenceTypeImpl(
+                        new ReflectionInterfaceDeclaration(SequencedCollection.class, typeResolver), ImmutableList.of(string)),
+                ancestors.get("java.util.SequencedCollection"));
         assertEquals(
                 new ReferenceTypeImpl(
                         new ReflectionInterfaceDeclaration(Iterable.class, typeResolver), ImmutableList.of(string)),
@@ -742,7 +750,7 @@ class ReferenceTypeTest extends AbstractSymbolResolutionTest {
 
         Map<String, ResolvedReferenceType> ancestors = new HashMap<>();
         abstractListOfString.getAllAncestors().forEach(a -> ancestors.put(a.getQualifiedName(), a));
-        assertEquals(5, ancestors.size());
+        assertEquals(6, ancestors.size());
 
         assertEquals(
                 new ReferenceTypeImpl(
@@ -757,6 +765,10 @@ class ReferenceTypeTest extends AbstractSymbolResolutionTest {
                 new ReferenceTypeImpl(
                         new ReflectionInterfaceDeclaration(Collection.class, typeResolver), ImmutableList.of(string)),
                 ancestors.get("java.util.Collection"));
+        assertEquals(
+                new ReferenceTypeImpl(
+                        new ReflectionInterfaceDeclaration(SequencedCollection.class, typeResolver), ImmutableList.of(string)),
+                ancestors.get("java.util.SequencedCollection"));
         assertEquals(
                 new ReferenceTypeImpl(new ReflectionClassDeclaration(Object.class, typeResolver)),
                 ancestors.get("java.lang.Object"));
@@ -775,7 +787,7 @@ class ReferenceTypeTest extends AbstractSymbolResolutionTest {
 
         Map<String, ResolvedReferenceType> ancestors = new HashMap<>();
         arrayListOfString.getAllAncestors().forEach(a -> ancestors.put(a.getQualifiedName(), a));
-        assertEquals(9, ancestors.size());
+        assertEquals(10, ancestors.size());
 
         assertEquals(
                 new ReferenceTypeImpl(new ReflectionInterfaceDeclaration(RandomAccess.class, typeResolver)),
@@ -796,6 +808,10 @@ class ReferenceTypeTest extends AbstractSymbolResolutionTest {
                 new ReferenceTypeImpl(
                         new ReflectionInterfaceDeclaration(Collection.class, typeResolver), ImmutableList.of(string)),
                 ancestors.get("java.util.Collection"));
+        assertEquals(
+                new ReferenceTypeImpl(
+                        new ReflectionInterfaceDeclaration(SequencedCollection.class, typeResolver), ImmutableList.of(string)),
+                ancestors.get("java.util.SequencedCollection"));
         assertEquals(
                 new ReferenceTypeImpl(
                         new ReflectionClassDeclaration(AbstractList.class, typeResolver), ImmutableList.of(string)),
@@ -821,8 +837,8 @@ class ReferenceTypeTest extends AbstractSymbolResolutionTest {
         assertEquals(
                 new ResolvedTypeVariable(new ReflectionInterfaceDeclaration(Stream.class, typeResolver)
                         .getTypeParameters()
-                        .get(0)),
-                stream.typeParametersValues().get(0));
+                        .getFirst()),
+                stream.typeParametersValues().getFirst());
     }
 
     @Test
@@ -839,11 +855,11 @@ class ReferenceTypeTest extends AbstractSymbolResolutionTest {
                 streamMap.findTypeParameter("T").get();
         ResolvedTypeVariable typeVariable = new ResolvedTypeVariable(streamMapR);
         stream = stream.deriveTypeParameters(stream.typeParametersMap().toBuilder()
-                .setValue(stream.getTypeDeclaration().get().getTypeParameters().get(0), typeVariable)
+                .setValue(stream.getTypeDeclaration().get().getTypeParameters().getFirst(), typeVariable)
                 .build());
 
         ResolvedTypeParameterDeclaration tpToReplace =
-                streamInterface.getTypeParameters().get(0);
+                streamInterface.getTypeParameters().getFirst();
         ResolvedType replaced = new ReferenceTypeImpl(new ReflectionClassDeclaration(String.class, typeResolver));
 
         ResolvedType streamReplaced = stream.replaceTypeVariables(tpToReplace, replaced);
@@ -868,7 +884,7 @@ class ReferenceTypeTest extends AbstractSymbolResolutionTest {
                 .build());
 
         ResolvedTypeParameterDeclaration tpToReplace =
-                streamInterface.getTypeParameters().get(0);
+                streamInterface.getTypeParameters().getFirst();
         ResolvedType replaced = new ReferenceTypeImpl(new ReflectionClassDeclaration(String.class, typeResolver));
 
         ResolvedType streamReplaced = stream.replaceTypeVariables(tpToReplace, replaced);
@@ -892,12 +908,12 @@ class ReferenceTypeTest extends AbstractSymbolResolutionTest {
     void testDirectAncestorsOfInterfaceExtendingInterface() {
         assertEquals(1, collectionOfString.getDirectAncestors().size());
         ResolvedReferenceType ancestor1 =
-                collectionOfString.getDirectAncestors().get(0);
+                collectionOfString.getDirectAncestors().getFirst();
         assertEquals("java.lang.Iterable", ancestor1.getQualifiedName());
         assertEquals(1, ancestor1.getTypeParametersMap().size());
-        assertEquals("T", ancestor1.getTypeParametersMap().get(0).a.getName());
+        assertEquals("T", ancestor1.getTypeParametersMap().getFirst().a.getName());
         assertEquals(
-                "java.lang.String", ancestor1.getTypeParametersMap().get(0).b.describe());
+                "java.lang.String", ancestor1.getTypeParametersMap().getFirst().b.describe());
     }
 
     @Test
@@ -907,7 +923,7 @@ class ReferenceTypeTest extends AbstractSymbolResolutionTest {
                 .map(ResolvedReferenceType::describe)
                 .collect(Collectors.toSet());
 
-        assertThat(ancestors, equalTo(new HashSet<>(Arrays.asList("java.lang.Object"))));
+        assertThat(ancestors, equalTo(new HashSet<>(List.of("java.lang.Object"))));
     }
 
     @Test
@@ -1139,7 +1155,7 @@ class ReferenceTypeTest extends AbstractSymbolResolutionTest {
 
     // return a list of types
     private List<ResolvedType> types(String... types) {
-        return Arrays.stream(types).map(type -> type(type)).collect(Collectors.toList());
+        return Arrays.stream(types).map(this::type).collect(Collectors.toList());
     }
 
     // return the specified type
@@ -1158,12 +1174,12 @@ class ReferenceTypeTest extends AbstractSymbolResolutionTest {
 
     private ResolvedTypeVariable parametrizedTypeUpperBounded(String type, String parameterType) {
         return new ResolvedTypeVariable(ResolvedTypeParameterDeclaration.onType(
-                parameterType, type + "." + parameterType, Arrays.asList((extendBound(parameterType)))));
+                parameterType, type + "." + parameterType, List.of((extendBound(parameterType)))));
     }
 
     private ResolvedTypeVariable parametrizedTypeLowerBounded(String type, String parameterType) {
         return new ResolvedTypeVariable(ResolvedTypeParameterDeclaration.onType(
-                parameterType, type + "." + parameterType, Arrays.asList((superBound(parameterType)))));
+                parameterType, type + "." + parameterType, List.of((superBound(parameterType)))));
     }
 
     // return an extend bound

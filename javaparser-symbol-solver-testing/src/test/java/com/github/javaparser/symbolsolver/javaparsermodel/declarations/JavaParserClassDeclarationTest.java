@@ -1103,7 +1103,8 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
                 "java.lang.Object.registerNatives()",
                 "java.lang.Object.wait()",
                 "java.lang.Object.wait(long)",
-                "java.lang.Object.wait(long, int)"));
+                "java.lang.Object.wait(long, int)",
+                "java.lang.Object.wait0(long)"));
 
         // Temporary workaround to allow tests to pass on JDK14
         if (TestJdk.getCurrentHostJdk().getMajorVersion() >= 14) {
@@ -1112,6 +1113,7 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
         assertEquals(expected.size(), signatures.size());
         assertThat(signatures, containsInAnyOrder(expected.toArray()));
     }
+
 
     ///
     /// Test constructors
@@ -1382,7 +1384,7 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
         ResolvedType foo = types.get(0);
         List<ResolvedReferenceType> ancestors =
                 foo.asReferenceType().getTypeDeclaration().get().getAncestors();
-        assertTrue(ancestors.size() == 1);
+        assertEquals(1, ancestors.size());
         assertEquals("FooBase", ancestors.get(0).getQualifiedName());
     }
 

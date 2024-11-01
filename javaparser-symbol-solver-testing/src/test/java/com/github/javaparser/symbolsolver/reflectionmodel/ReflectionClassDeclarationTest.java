@@ -303,7 +303,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         List.class.getCanonicalName(),
                         RandomAccess.class.getCanonicalName()),
                 arraylist.getInterfaces().stream()
-                        .map(i -> i.getQualifiedName())
+                        .map(ResolvedReferenceType::getQualifiedName)
                         .collect(Collectors.toSet()));
     }
 
@@ -314,14 +314,15 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
         // Serializable, Cloneable, Iterable<E>, Collection<E>, List<E>, RandomAccess
         assertEquals(
                 ImmutableSet.of(
-                        Serializable.class.getCanonicalName(),
-                        Cloneable.class.getCanonicalName(),
-                        List.class.getCanonicalName(),
                         RandomAccess.class.getCanonicalName(),
+                        List.class.getCanonicalName(),
+                        Cloneable.class.getCanonicalName(),
                         Collection.class.getCanonicalName(),
-                        Iterable.class.getCanonicalName()),
+                        SequencedCollection.class.getCanonicalName(),
+                        Iterable.class.getCanonicalName(),
+                        Serializable.class.getCanonicalName()),
                 arraylist.getAllInterfaces().stream()
-                        .map(i -> i.getQualifiedName())
+                        .map(ResolvedReferenceType::getQualifiedName)
                         .collect(Collectors.toSet()));
     }
 
@@ -335,13 +336,13 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         AbstractCollection.class.getCanonicalName(),
                         AbstractList.class.getCanonicalName()),
                 arraylist.getAllSuperClasses().stream()
-                        .map(i -> i.getQualifiedName())
+                        .map(ResolvedReferenceType::getQualifiedName)
                         .collect(Collectors.toSet()));
         ResolvedClassDeclaration string = new ReflectionClassDeclaration(String.class, typeResolver);
         assertEquals(
                 ImmutableSet.of(Object.class.getCanonicalName()),
                 string.getAllSuperClasses().stream()
-                        .map(i -> i.getQualifiedName())
+                        .map(ResolvedReferenceType::getQualifiedName)
                         .collect(Collectors.toSet()));
     }
 
@@ -429,7 +430,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
         ResolvedClassDeclaration arraylist = new ReflectionClassDeclaration(ArrayList.class, typeResolver);
         Map<String, ResolvedReferenceType> ancestors = new HashMap<>();
         arraylist.getAllAncestors().forEach(a -> ancestors.put(a.getQualifiedName(), a));
-        assertEquals(9, ancestors.size());
+        assertEquals(10, ancestors.size());
 
         ResolvedTypeVariable typeVariable =
                 new ResolvedTypeVariable(arraylist.getTypeParameters().get(0));
@@ -511,7 +512,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                 (ReflectionClassDeclaration) typeResolver.solveType("com.github.javaparser.ast.CompilationUnit");
         assertEquals(
                 ImmutableSet.of("com.github.javaparser.ast.Node", "java.lang.Object"),
-                cu.getAllSuperClasses().stream().map(i -> i.getQualifiedName()).collect(Collectors.toSet()));
+                cu.getAllSuperClasses().stream().map(ResolvedReferenceType::getQualifiedName).collect(Collectors.toSet()));
     }
 
     @Test
@@ -530,7 +531,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
 
         ResolvedReferenceType ancestor;
 
-        ancestor = constructorDeclaration.getAllSuperClasses().get(0);
+        ancestor = constructorDeclaration.getAllSuperClasses().getFirst();
         assertEquals("com.github.javaparser.ast.body.CallableDeclaration", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -564,7 +565,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
         assertEquals(
                 ImmutableSet.of(),
                 compilationUnit.getInterfaces().stream()
-                        .map(i -> i.getQualifiedName())
+                        .map(ResolvedReferenceType::getQualifiedName)
                         .collect(Collectors.toSet()));
 
         ReflectionClassDeclaration coid = (ReflectionClassDeclaration)
@@ -689,7 +690,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .sorted()
                         .collect(Collectors.toList()),
                 compilationUnit.getAllInterfaces().stream()
-                        .map(i -> i.getQualifiedName())
+                        .map(ResolvedReferenceType::getQualifiedName)
                         .sorted()
                         .collect(Collectors.toList()));
 
@@ -720,7 +721,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         "com.github.javaparser.ast.nodeTypes.NodeWithRange",
                         "com.github.javaparser.ast.nodeTypes.NodeWithTokenRange",
                         "com.github.javaparser.resolution.Resolvable"),
-                coid.getAllInterfaces().stream().map(i -> i.getQualifiedName()).collect(Collectors.toSet()));
+                coid.getAllInterfaces().stream().map(ResolvedReferenceType::getQualifiedName).collect(Collectors.toSet()));
     }
 
     @Test
@@ -1094,7 +1095,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
         List<ResolvedReferenceType> ancestors = constructorDeclaration.getAncestors();
         ancestors.sort(comparing(ResolvedReferenceType::getQualifiedName));
 
-        ancestor = ancestors.get(0);
+        ancestor = ancestors.getFirst();
         assertEquals("com.github.javaparser.ast.body.CallableDeclaration", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -1175,7 +1176,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.get(8);
+        ancestor = ancestors.getLast();
         assertEquals("com.github.javaparser.resolution.Resolvable", ancestor.getQualifiedName());
     }
 
@@ -1193,7 +1194,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         "java.lang.Object",
                         "com.github.javaparser.HasParentNode",
                         "com.github.javaparser.ast.nodeTypes.NodeWithRange"),
-                cu.getAllAncestors().stream().map(i -> i.getQualifiedName()).collect(Collectors.toSet()));
+                cu.getAllAncestors().stream().map(ResolvedReferenceType::getQualifiedName).collect(Collectors.toSet()));
     }
 
     @Test
@@ -1205,7 +1206,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
         List<ResolvedReferenceType> ancestors = constructorDeclaration.getAllAncestors();
         ancestors.sort(comparing(ResolvedReferenceType::getQualifiedName));
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.HasParentNode", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.Node",
@@ -1215,10 +1216,10 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.Node", ancestor.getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.body.BodyDeclaration", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -1228,7 +1229,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.body.CallableDeclaration", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -1238,7 +1239,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithAnnotations", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -1248,7 +1249,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithBlockStmt", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -1258,10 +1259,10 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithDeclaration", ancestor.getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithJavadoc", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -1271,7 +1272,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithJavadoc", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -1281,7 +1282,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithModifiers", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -1291,7 +1292,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithParameters", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -1301,7 +1302,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithParameters", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -1311,7 +1312,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithRange", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.Node",
@@ -1321,7 +1322,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithSimpleName", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -1331,7 +1332,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithSimpleName", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -1341,7 +1342,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithThrownExceptions", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -1351,7 +1352,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithThrownExceptions", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -1361,7 +1362,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithTokenRange", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.Node",
@@ -1371,7 +1372,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithTypeParameters", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -1381,7 +1382,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithTypeParameters", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -1391,7 +1392,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals(
                 "com.github.javaparser.ast.nodeTypes.modifiers.NodeWithAbstractModifier", ancestor.getQualifiedName());
         assertEquals(
@@ -1402,7 +1403,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals(
                 "com.github.javaparser.ast.nodeTypes.modifiers.NodeWithAccessModifiers", ancestor.getQualifiedName());
         assertEquals(
@@ -1413,7 +1414,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals(
                 "com.github.javaparser.ast.nodeTypes.modifiers.NodeWithAccessModifiers", ancestor.getQualifiedName());
         assertEquals(
@@ -1424,7 +1425,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals(
                 "com.github.javaparser.ast.nodeTypes.modifiers.NodeWithFinalModifier", ancestor.getQualifiedName());
         assertEquals(
@@ -1435,7 +1436,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals(
                 "com.github.javaparser.ast.nodeTypes.modifiers.NodeWithPrivateModifier", ancestor.getQualifiedName());
         assertEquals(
@@ -1446,7 +1447,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals(
                 "com.github.javaparser.ast.nodeTypes.modifiers.NodeWithProtectedModifier", ancestor.getQualifiedName());
         assertEquals(
@@ -1458,7 +1459,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals(
                 "com.github.javaparser.ast.nodeTypes.modifiers.NodeWithPublicModifier", ancestor.getQualifiedName());
         assertEquals(
@@ -1469,7 +1470,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals(
                 "com.github.javaparser.ast.nodeTypes.modifiers.NodeWithStaticModifier", ancestor.getQualifiedName());
         assertEquals(
@@ -1480,7 +1481,7 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals(
                 "com.github.javaparser.ast.nodeTypes.modifiers.NodeWithStrictfpModifier", ancestor.getQualifiedName());
         assertEquals(
@@ -1491,19 +1492,19 @@ class ReflectionClassDeclarationTest extends AbstractSymbolResolutionTest {
                         .asReferenceType()
                         .getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.observer.Observable", ancestor.getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.ast.visitor.Visitable", ancestor.getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("com.github.javaparser.resolution.Resolvable", ancestor.getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("java.lang.Cloneable", ancestor.getQualifiedName());
 
-        ancestor = ancestors.remove(0);
+        ancestor = ancestors.removeFirst();
         assertEquals("java.lang.Object", ancestor.getQualifiedName());
 
         assertTrue(ancestors.isEmpty());
