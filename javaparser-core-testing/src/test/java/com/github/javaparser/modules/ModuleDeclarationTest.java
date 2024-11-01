@@ -218,7 +218,7 @@ class ModuleDeclarationTest {
 
         moduleDeclaration
                 .getDirectives()
-                .addLast(new ModuleExportsDirective()
+                .addLastNode(new ModuleExportsDirective()
                         .setName("foo.bar")
                         .addModuleName("other.foo")
                         .addModuleName("other.bar"));

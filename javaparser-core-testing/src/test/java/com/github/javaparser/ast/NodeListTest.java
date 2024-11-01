@@ -61,17 +61,17 @@ class NodeListTest extends AbstractLexicalPreservingTest {
     void addFirst() {
         final NodeList<Name> list = nodeList(new Name("abc"), new Name("bcd"), new Name("cde"));
 
-        list.addFirst(new Name("xxx"));
+        list.addFirstNode(new Name("xxx"));
 
         assertEquals(4, list.size());
         assertEquals("[xxx, abc, bcd, cde]", list.toString());
     }
 
     @Test
-    void addLast() {
+    void addLastNode() {
         final NodeList<Name> list = nodeList(new Name("abc"), new Name("bcd"), new Name("cde"));
 
-        list.addLast(new Name("xxx"));
+        list.addLastNode(new Name("xxx"));
 
         assertEquals(4, list.size());
         assertEquals("[abc, bcd, cde, xxx]", list.toString());
@@ -122,40 +122,40 @@ class NodeListTest extends AbstractLexicalPreservingTest {
     }
 
     @Test
-    public void getFirstWhenEmpty() {
+    public void getFirstNodeWhenEmpty() {
         final NodeList<Name> list = nodeList();
 
-        Optional<Name> first = list.getFirst();
+        Optional<Name> first = list.getFirstNode();
 
         assertFalse(first.isPresent());
         assertEquals("Optional.empty", first.toString());
     }
 
     @Test
-    public void getFirstWhenNonEmpty() {
+    public void getFirstNodeWhenNonEmpty() {
         final NodeList<Name> list = nodeList(new Name("abc"), new Name("bcd"), new Name("cde"));
 
-        Optional<Name> first = list.getFirst();
+        Optional<Name> first = list.getFirstNode();
 
         assertTrue(first.isPresent());
         assertEquals("Optional[abc]", first.toString());
     }
 
     @Test
-    public void getLastWhenEmpty() {
+    public void getLastNodeWhenEmpty() {
         final NodeList<Name> list = nodeList();
 
-        Optional<Name> last = list.getLast();
+        Optional<Name> last = list.getLastNode();
 
         assertFalse(last.isPresent());
         assertEquals("Optional.empty", last.toString());
     }
 
     @Test
-    public void getLastWhenNonEmpty() {
+    public void getLastNodeWhenNonEmpty() {
         final NodeList<Name> list = nodeList(new Name("abc"), new Name("bcd"), new Name("cde"));
 
-        Optional<Name> last = list.getLast();
+        Optional<Name> last = list.getLastNode();
 
         assertTrue(last.isPresent());
         assertEquals("Optional[cde]", last.toString());
