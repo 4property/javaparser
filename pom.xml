@@ -146,7 +146,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
+        <maven.compiler.release>21</maven.compiler.release>
         <byte-buddy.version>1.15.7</byte-buddy.version>
         <argLine>-javaagent:'${settings.localRepository}/net/bytebuddy/byte-buddy-agent/${byte-buddy.version}/byte-buddy-agent-${byte-buddy.version}.jar'</argLine>
         <build.timestamp>2024-09-02T00:00:00Z</build.timestamp>
@@ -186,10 +186,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
+                <version>3.13.0</version>
             </plugin>
         </plugins>
         <pluginManagement>
@@ -434,6 +431,11 @@
             <id>run-release</id>
             <build>
                 <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.13.0</version>
+                    </plugin>
                     <!-- Update the readme with the new version number, but only when compiling a new release. -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>

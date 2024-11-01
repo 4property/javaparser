@@ -66,7 +66,11 @@ public abstract class AbstractSymbolResolutionTest {
         JDK15(15),
         JDK16(16),
         JDK17(17),
-        JDK18(18);
+        JDK18(18),
+        JDK19(19),
+        JDK20(20),
+        JDK21(21),
+        JDK22(22);
 
         private final Integer major;
 
@@ -116,8 +120,9 @@ public abstract class AbstractSymbolResolutionTest {
                 return JDK17;
             } else if ("18".equals(javaVersion) || javaVersion.startsWith("18.")) {
                 return JDK18;
+            } else if ("19".equals(javaVersion) || javaVersion.startsWith("19.")){
+                return JDK19;
             }
-
             throw new IllegalStateException("Unable to determine the current version of java running");
         }
 
