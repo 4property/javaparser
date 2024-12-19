@@ -346,7 +346,7 @@
                     <configuration>
                         <java>
                             <!-- google-java-format, but better: see https://github.com/palantir/palantir-java-format -->
-                            <palantirJavaFormat/>
+                            <palantirJavaFormat />
                         </java>
                     </configuration>
                 </plugin>
@@ -509,29 +509,7 @@
                             </execution>
                         </executions>
                     </plugin>
-
-                    <!-- GPG plugin - used to sign the release JAR before pushing to OSSRH -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.2.7</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                                <configuration>
-                                    <!-- Prevent `gpg` from using pinentry programs -->
-                                    <gpgArguments>
-                                        <arg>--pinentry-mode</arg>
-                                        <arg>loopback</arg>
-                                    </gpgArguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
+         
                    <!-- S -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
