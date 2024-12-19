@@ -56,6 +56,7 @@ public interface NodeWithImplements<N extends Node> {
     /**
      * @deprecated use addImplementedType instead
      */
+    @Deprecated
     default N addImplements(String name) {
         return addImplementedType(name);
     }
@@ -63,6 +64,7 @@ public interface NodeWithImplements<N extends Node> {
     /**
      * @deprecated use addImplementedType instead
      */
+    @Deprecated
     default N addImplements(Class<?> clazz) {
         return addImplementedType(clazz);
     }

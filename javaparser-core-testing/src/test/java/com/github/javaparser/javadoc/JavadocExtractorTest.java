@@ -22,13 +22,18 @@
 package com.github.javaparser.javadoc;
 
 import static com.github.javaparser.StaticJavaParser.parse;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.github.javaparser.ParseProblemException;
+import com.github.javaparser.ParserConfiguration;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Objects;
+
 import org.junit.jupiter.api.Test;
 
 class JavadocExtractorTest {
@@ -40,8 +45,10 @@ class JavadocExtractorTest {
 
     private void processFile(File file) throws FileNotFoundException {
         try {
+            StaticJavaParser.getParserConfiguration()
+                    .setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_21).setLexicalPreservationEnabled(true);
             CompilationUnit cu = parse(file);
-            new VoidVisitorAdapter<Object>() {
+            new VoidVisitorAdapter<>() {
                 @Override
                 public void visit(JavadocComment n, Object arg) {
                     super.visit(n, arg);
@@ -49,12 +56,20 @@ class JavadocExtractorTest {
                 }
             }.visit(cu, null);
         } catch (ParseProblemException e) {
-            System.err.println("ERROR PROCESSING " + file);
+            switch (file.getName()){
+                //These files contain invalid java syntax, so won't be parsed.
+                case "Sample.java", "TestFileIso88591.java", "EnumWithInnerType.java"-> {
+                    String msg = "INVALID SYNTAX in " + file + ". Problem: " + e.getProblems().getFirst().getMessage();
+                    System.out.println(msg);
+                }
+                default -> fail("ERROR PROCESSING " + file + ". Cause: " + e.getMessage());
+            }
+
         }
     }
 
     private void processDir(File dir) throws FileNotFoundException {
-        for (File child : dir.listFiles()) {
+        for (File child : Objects.requireNonNull(dir.listFiles())) {
             if (child.isFile() && child.getName().endsWith(".java")) {
                 processFile(child);
             } else if (child.isDirectory()) {

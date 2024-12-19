@@ -66,6 +66,7 @@ public interface Solver {
      * @deprecated Similarly to solveType this should eventually disappear as the symbol resolution logic should be more general
      * and do not be specific to JavaParser classes like in this case.
      */
+    @Deprecated
     SymbolReference<ResolvedTypeDeclaration> solveTypeInType(ResolvedTypeDeclaration typeDeclaration, String name);
 
     /**

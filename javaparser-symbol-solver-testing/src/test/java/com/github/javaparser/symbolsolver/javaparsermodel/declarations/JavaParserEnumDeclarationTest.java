@@ -89,28 +89,28 @@ class JavaParserEnumDeclarationTest extends AbstractTypeDeclarationTest
     void testIsInterface() {
         JavaParserEnumDeclaration modifier =
                 (JavaParserEnumDeclaration) typeSolver.solveType("com.github.javaparser.ast.Modifier");
-        assertEquals(false, modifier.isInterface());
+        assertFalse(modifier.isInterface());
     }
 
     @Test
     void testIsEnum() {
         JavaParserEnumDeclaration modifier =
                 (JavaParserEnumDeclaration) typeSolver.solveType("com.github.javaparser.ast.Modifier");
-        assertEquals(true, modifier.isEnum());
+        assertTrue(modifier.isEnum());
     }
 
     @Test
     void testIsTypeVariable() {
         JavaParserEnumDeclaration modifier =
                 (JavaParserEnumDeclaration) typeSolver.solveType("com.github.javaparser.ast.Modifier");
-        assertEquals(false, modifier.isTypeParameter());
+        assertFalse(modifier.isTypeParameter());
     }
 
     @Test
     void testIsType() {
         JavaParserEnumDeclaration modifier =
                 (JavaParserEnumDeclaration) typeSolver.solveType("com.github.javaparser.ast.Modifier");
-        assertEquals(true, modifier.isType());
+        assertTrue(modifier.isType());
     }
 
     @Test
@@ -1032,6 +1032,7 @@ class JavaParserEnumDeclarationTest extends AbstractTypeDeclarationTest
                 "java.lang.Object.registerNatives()",
                 "java.lang.Object.wait()",
                 "java.lang.Object.wait(long)",
+                "java.lang.Object.wait0(long)",
                 "java.lang.Object.wait(long, int)"));
 
         // Temporary workaround to allow tests to pass on JDK14
@@ -1112,10 +1113,10 @@ class JavaParserEnumDeclarationTest extends AbstractTypeDeclarationTest
         SymbolReference<ResolvedMethodDeclaration> res;
 
         res = constructorDeclaration.solveMethod("unexistingMethod", ImmutableList.of());
-        assertEquals(false, res.isSolved());
+        assertFalse(res.isSolved());
 
         res = constructorDeclaration.solveMethod("isStatic", ImmutableList.of(ResolvedPrimitiveType.BOOLEAN));
-        assertEquals(false, res.isSolved());
+        assertFalse(res.isSolved());
     }
 
     //    @Test
@@ -1253,7 +1254,7 @@ class JavaParserEnumDeclarationTest extends AbstractTypeDeclarationTest
                 .asReferenceType()
                 .getTypeDeclaration()
                 .get();
-        assertEquals(false, dec.hasDirectlyAnnotation("javax.persistence.Embeddable"));
+        assertFalse(dec.hasDirectlyAnnotation("javax.persistence.Embeddable"));
     }
 
     // Issue 1749
@@ -1277,8 +1278,8 @@ class JavaParserEnumDeclarationTest extends AbstractTypeDeclarationTest
                 .asReferenceType()
                 .getTypeDeclaration()
                 .get();
-        assertEquals(false, dec.hasDirectlyAnnotation("javax.persistence.Embeddable"));
-        assertEquals(true, dec.hasDirectlyAnnotation("MyAnno"));
+        assertFalse(dec.hasDirectlyAnnotation("javax.persistence.Embeddable"));
+        assertTrue(dec.hasDirectlyAnnotation("MyAnno"));
     }
 
     @Override

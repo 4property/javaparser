@@ -230,7 +230,7 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
                 (JavaParserClassDeclaration) typeSolver.solveType("com.github.javaparser.ast.CompilationUnit");
         assertEquals(
                 ImmutableSet.of("com.github.javaparser.ast.Node", "java.lang.Object"),
-                cu.getAllSuperClasses().stream().map(i -> i.getQualifiedName()).collect(Collectors.toSet()));
+                cu.getAllSuperClasses().stream().map(ResolvedReferenceType::getQualifiedName).collect(Collectors.toSet()));
     }
 
     @Test
@@ -247,7 +247,7 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
 
         ResolvedReferenceType ancestor;
 
-        ancestor = constructorDeclaration.getAllSuperClasses().get(0);
+        ancestor = constructorDeclaration.getAllSuperClasses().getFirst();
         assertEquals("com.github.javaparser.ast.body.BodyDeclaration", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -260,7 +260,7 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
         ancestor = constructorDeclaration.getAllSuperClasses().get(1);
         assertEquals("com.github.javaparser.ast.Node", ancestor.getQualifiedName());
 
-        ancestor = constructorDeclaration.getAllSuperClasses().get(2);
+        ancestor = constructorDeclaration.getAllSuperClasses().getLast();
         assertEquals("java.lang.Object", ancestor.getQualifiedName());
     }
 
@@ -271,14 +271,14 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
         assertEquals(
                 ImmutableSet.of(),
                 compilationUnit.getInterfaces().stream()
-                        .map(i -> i.getQualifiedName())
+                        .map(ResolvedReferenceType::getQualifiedName)
                         .collect(Collectors.toSet()));
 
         JavaParserClassDeclaration coid = (JavaParserClassDeclaration)
                 typeSolver.solveType("com.github.javaparser.ast.body.ClassOrInterfaceDeclaration");
         assertEquals(
                 ImmutableSet.of("com.github.javaparser.ast.DocumentableNode"),
-                coid.getInterfaces().stream().map(i -> i.getQualifiedName()).collect(Collectors.toSet()));
+                coid.getInterfaces().stream().map(ResolvedReferenceType::getQualifiedName).collect(Collectors.toSet()));
     }
 
     @Test
@@ -289,7 +289,7 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
 
         ResolvedReferenceType interfaze;
 
-        interfaze = constructorDeclaration.getInterfaces().get(0);
+        interfaze = constructorDeclaration.getInterfaces().getFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithJavaDoc", interfaze.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -366,7 +366,7 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
         assertEquals(
                 ImmutableSet.of("java.lang.Cloneable"),
                 compilationUnit.getAllInterfaces().stream()
-                        .map(i -> i.getQualifiedName())
+                        .map(ResolvedReferenceType::getQualifiedName)
                         .collect(Collectors.toSet()));
 
         JavaParserClassDeclaration coid = (JavaParserClassDeclaration)
@@ -377,7 +377,7 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
                         "com.github.javaparser.ast.NamedNode",
                         "com.github.javaparser.ast.body.AnnotableNode",
                         "com.github.javaparser.ast.DocumentableNode"),
-                coid.getAllInterfaces().stream().map(i -> i.getQualifiedName()).collect(Collectors.toSet()));
+                coid.getAllInterfaces().stream().map(ResolvedReferenceType::getQualifiedName).collect(Collectors.toSet()));
     }
 
     @Test
@@ -388,7 +388,7 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
 
         ResolvedReferenceType interfaze;
 
-        interfaze = constructorDeclaration.getAllInterfaces().get(0);
+        interfaze = constructorDeclaration.getAllInterfaces().getFirst();
         assertEquals("com.github.javaparser.ast.nodeTypes.NodeWithJavaDoc", interfaze.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -483,7 +483,7 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
 
         ResolvedReferenceType ancestor;
 
-        ancestor = ancestors.get(0);
+        ancestor = ancestors.getFirst();
         assertEquals("com.github.javaparser.ast.body.BodyDeclaration", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -563,7 +563,7 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
                 (JavaParserClassDeclaration) typeSolver.solveType("com.github.javaparser.ast.CompilationUnit");
         assertEquals(
                 ImmutableSet.of("java.lang.Cloneable", "com.github.javaparser.ast.Node", "java.lang.Object"),
-                cu.getAllAncestors().stream().map(i -> i.getQualifiedName()).collect(Collectors.toSet()));
+                cu.getAllAncestors().stream().map(ResolvedReferenceType::getQualifiedName).collect(Collectors.toSet()));
     }
 
     @Test
@@ -586,7 +586,7 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
 
         ResolvedReferenceType ancestor;
 
-        ancestor = ancestors.get(0);
+        ancestor = ancestors.getFirst();
         assertEquals("com.github.javaparser.ast.body.BodyDeclaration", ancestor.getQualifiedName());
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration",
@@ -787,7 +787,7 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
 
         ReferenceTypeImpl rtClassDeclaration = new ReferenceTypeImpl(classDeclaration);
 
-        assertEquals("s", classDeclaration.getAllFields().get(0).getName());
+        assertEquals("s", classDeclaration.getAllFields().getFirst().getName());
         assertEquals(string, classDeclaration.getAllFields().get(0).getType());
         assertEquals(string, rtClassDeclaration.getFieldType("s").get());
 
@@ -918,7 +918,7 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
 
         List<ResolvedMethodDeclaration> sortedMethods = allMethods.stream()
                 .sorted(Comparator.comparing(ResolvedMethodLikeDeclaration::getQualifiedSignature))
-                .collect(Collectors.toList());
+                .toList();
 
         assertEquals(
                 "com.github.javaparser.ast.body.ConstructorDeclaration.accept(com.github.javaparser.ast.visitor.GenericVisitor<R, A>, A)",
@@ -991,10 +991,10 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
 
         List<MethodUsage> sortedMethods = allMethods.stream()
                 .sorted(Comparator.comparing(MethodUsage::getQualifiedSignature))
-                .collect(Collectors.toList());
+                .toList();
 
         List<String> signatures =
-                sortedMethods.stream().map(m -> m.getQualifiedSignature()).collect(Collectors.toList());
+                sortedMethods.stream().map(MethodUsage::getQualifiedSignature).collect(Collectors.toList());
 
         List<String> expected = new ArrayList<>(Arrays.asList(
                 "com.github.javaparser.ast.Node.addOrphanComment(com.github.javaparser.ast.comments.Comment)",
@@ -1103,7 +1103,8 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
                 "java.lang.Object.registerNatives()",
                 "java.lang.Object.wait()",
                 "java.lang.Object.wait(long)",
-                "java.lang.Object.wait(long, int)"));
+                "java.lang.Object.wait(long, int)",
+                "java.lang.Object.wait0(long)"));
 
         // Temporary workaround to allow tests to pass on JDK14
         if (TestJdk.getCurrentHostJdk().getMajorVersion() >= 14) {
@@ -1112,6 +1113,7 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
         assertEquals(expected.size(), signatures.size());
         assertThat(signatures, containsInAnyOrder(expected.toArray()));
     }
+
 
     ///
     /// Test constructors
@@ -1201,7 +1203,7 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
         ResolvedReferenceType rawClassType =
                 (ResolvedReferenceType) ReflectionFactory.typeUsageFor(Class.class, typeSolverNewCode);
         ResolvedReferenceType classOfStringType = (ResolvedReferenceType) rawClassType.replaceTypeVariables(
-                rawClassType.getTypeDeclaration().get().getTypeParameters().get(0), stringType);
+                rawClassType.getTypeDeclaration().get().getTypeParameters().getFirst(), stringType);
         res = constructorDeclaration.solveMethod("isThrows", ImmutableList.of(classOfStringType));
         assertFalse(res.isSolved());
     }
@@ -1290,12 +1292,13 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
     // issue #4133
     @Test
     void testContainerType() {
-        String code = "public class Foo {\n"
-                + "    public static class Bar {\n"
-                + "        public static class Baz {\n"
-                + "        }\n"
-                + "    }\n"
-                + "}\n";
+        String code = """
+                public class Foo {
+                    public static class Bar {
+                        public static class Baz {
+                        }
+                    }
+                }""";
 
         JavaParserAdapter parser = JavaParserAdapter.of(createParserWithResolver(defaultTypeSolver()));
         CompilationUnit cu = parser.parse(code);
@@ -1379,11 +1382,11 @@ class JavaParserClassDeclarationTest extends AbstractResolutionTest {
     // issue #3436 getAncestors()/getAllAncestors() does not work if base class starts with the same name
     public void getAncestors_with_child_name_is_part_of_ancestor_name() {
         List<ResolvedType> types = declaredTypes("public class Foo extends FooBase {}", "public class FooBase {}");
-        ResolvedType foo = types.get(0);
+        ResolvedType foo = types.getFirst();
         List<ResolvedReferenceType> ancestors =
                 foo.asReferenceType().getTypeDeclaration().get().getAncestors();
-        assertTrue(ancestors.size() == 1);
-        assertEquals("FooBase", ancestors.get(0).getQualifiedName());
+        assertEquals(1, ancestors.size());
+        assertEquals("FooBase", ancestors.getFirst().getQualifiedName());
     }
 
     private List<ResolvedType> declaredTypes(String... lines) {

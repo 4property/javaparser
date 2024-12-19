@@ -68,14 +68,14 @@ Using the dependency above will add both JavaParser and JavaSymbolSolver to your
 <dependency>
     <groupId>com.github.javaparser</groupId>
     <artifactId>javaparser-core</artifactId>
-    <version>3.26.2</version>
+    <version>4.0.0</version>
 </dependency>
 ```
 
 **Gradle**:
 
 ```
-implementation 'com.github.javaparser:javaparser-core:3.26.2'
+implementation 'com.github.javaparser:javaparser-core:4.0.0'
 ```
 
 Since version 3.6.17 the AST can be serialized to JSON.
@@ -87,14 +87,14 @@ There is a separate module for this:
 <dependency>
     <groupId>com.github.javaparser</groupId>
     <artifactId>javaparser-core-serialization</artifactId>
-    <version>3.26.2</version>
+    <version>4.0.0</version>
 </dependency>
 ```
 
 **Gradle**:
 
 ```
-implementation 'com.github.javaparser:javaparser-core-serialization:3.26.2'
+implementation 'com.github.javaparser:javaparser-core-serialization:4.0.0'
 ```
 
 ## How To Compile Sources

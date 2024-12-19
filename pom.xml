@@ -14,7 +14,7 @@
     <groupId>com.github.javaparser</groupId>
     <artifactId>javaparser-parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.26.3-SNAPSHOT</version>
+    <version>4.0.0</version>
 
     <name>javaparser-parent</name>
     <url>https://github.com/javaparser</url>
@@ -146,10 +146,11 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
+        <maven.compiler.release>21</maven.compiler.release>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
         <byte-buddy.version>1.15.7</byte-buddy.version>
         <argLine>-javaagent:'${settings.localRepository}/net/bytebuddy/byte-buddy-agent/${byte-buddy.version}/byte-buddy-agent-${byte-buddy.version}.jar'</argLine>
-        <build.timestamp>2024-09-02T00:00:00Z</build.timestamp>
+        <build.timestamp>2024-11-01T00:00:00Z</build.timestamp>
         <!-- Maven Plugins -->
     </properties>
 
@@ -157,7 +158,7 @@
         <connection>scm:git:git://github.com/javaparser/javaparser.git</connection>
         <developerConnection>scm:git:git@github.com:javaparser/javaparser.git</developerConnection>
         <url>https://github.com/javaparser/javaparser.git</url>
-        <tag>HEAD</tag>
+        <tag>javaparser-parent-4.0.0</tag>
     </scm>
 
     <issueManagement>
@@ -186,10 +187,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
+                <version>3.13.0</version>
             </plugin>
         </plugins>
         <pluginManagement>
@@ -348,7 +346,7 @@
                     <configuration>
                         <java>
                             <!-- google-java-format, but better: see https://github.com/palantir/palantir-java-format -->
-                            <palantirJavaFormat/>
+                            <palantirJavaFormat />
                         </java>
                     </configuration>
                 </plugin>
@@ -434,10 +432,16 @@
             <id>run-release</id>
             <build>
                 <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.13.0</version>
+                    </plugin>
                     <!-- Update the readme with the new version number, but only when compiling a new release. -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-resources-plugin</artifactId>
+                        <version>3.3.1</version>
                         <executions>
                             <execution>
                                 <id>copy-readme</id>
@@ -465,6 +469,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-scm-plugin</artifactId>
+                        <version>2.1.0</version>
                         <configuration>
                             <includes>readme.md</includes>
                             <message>[maven-release-plugin] update readme</message>
@@ -478,6 +483,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
+                        <version>3.3.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -492,37 +498,23 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.10.1</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
                                 <goals>
                                     <goal>jar</goal>
                                 </goals>
+                                <phase>package</phase>
                             </execution>
                         </executions>
                     </plugin>
-
-                    <!-- GPG plugin - used to sign the release JAR before pushing to OSSRH -->
+         
+                   <!-- S -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.2.7</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                                <configuration>
-                                    <!-- Prevent `gpg` from using pinentry programs -->
-                                    <gpgArguments>
-                                        <arg>--pinentry-mode</arg>
-                                        <arg>loopback</arg>
-                                    </gpgArguments>
-                                </configuration>
-                            </execution>
-                        </executions>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.5.1</version>
                     </plugin>
 
                 </plugins>
